@@ -1,0 +1,15 @@
+{
+  "name": "MMM-DelayedNotification",
+  "version": "1.0.0",
+  "description": "A MagicMirror² module that sends configurable time-delayed notifications triggered by other modules.",
+  "main": "MMM-DelayedNotification.js",
+  "keywords": [
+    "magicmirror",
+    "module",
+    "notification",
+    "delay",
+    "automation"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
