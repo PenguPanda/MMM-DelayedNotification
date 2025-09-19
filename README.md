@@ -7,42 +7,37 @@ Useful for chaining events, reminders, or creating delayed effects after certain
 
 ## ✨ Features
 - Configure multiple rules for different triggers.
-- Each rule can have:
-  - A trigger notification
-  - A custom delay (milliseconds)
-  - A notification to send
-  - An optional payload
+- Supports:
+  - Single notification to send
+  - Multiple notifications (array of strings)
+  - Multiple notifications with **individual payloads**
+- Rule-level payloads (shared across all notifications in a rule) or per-notification payloads.
+- Flexible trigger matching (exact string, array of strings, or RegExp).
 
 ---
 
 ## 📦 Installation
 
-Open a terminal on your MagicMirror and run:
-
 ```bash
 cd ~/MagicMirror/modules
 git clone https://github.com/PenguPanda/MMM-DelayedNotification.git
 
-Then add the module to your config/config.js file.
 ⚙️ Configuration
 
-Add this to your config/config.js:
+Add to your config/config.js:
 
 {
   module: "MMM-DelayedNotification",
+  position: "bottom_bar", // no UI needed
   config: {
     rules: [
       {
-        trigger: "SHOW_ALERT",
-        delay: 5000,
-        send: "DELAYED_ALERT_FOLLOWUP",
-        payload: { info: "Follow-up after alert" }
-      },
-      {
-        trigger: "SOME_OTHER_MODULE_EVENT",
-        delay: 10000,
-        send: "REMINDER_EVENT",
-        payload: { reminder: "Don’t forget this!" }
+        trigger: "AUTO_LIGHT_OFF",
+        delay: 1000,
+        send: [
+          { notification: "FRAMELIGHT_OFF", payload: { brightness: 0 } },
+          { notification: "FRAMELIGHT_PARTY_OFF", payload: { mode: "stop" } }
+        ]
       }
     ]
   }
@@ -53,20 +48,44 @@ Option	Type	Description
 rules	Array	List of rule objects. Each rule listens for one notification and sends another after a delay.
 Rule object properties
 Property	Type	Required	Description
-trigger	String	✅	The incoming notification to listen for.
-delay	Number	✅	Delay in milliseconds before sending the outgoing notification.
-send	String	✅	The notification name to send after the delay.
-payload	Object	❌	Optional payload to send along with the notification. Default: {}.
-💡 Example Use Cases
+trigger	String | Array | RegExp	✅	The incoming notification(s) to listen for. Can be a single string, an array of strings, or a RegExp.
+delay	Number	✅	Delay in milliseconds before sending the outgoing notification(s).
+send	String | Array	✅	The notification(s) to send. Can be a single string, an array of strings, or an array of objects { notification, payload }.
+payload	Object	❌	Optional payload applied to all notifications in this rule (unless overridden by per-notification payloads).
+💡 Examples
 
-    Trigger a reminder notification 10 seconds after a motion sensor event.
+1. Send multiple notifications without payloads
 
-    Send a follow-up message after a system alert.
+{
+  trigger: "AUTO_LIGHT_OFF",
+  delay: 1000,
+  send: [
+    "FRAMELIGHT_OFF",
+    "FRAMELIGHT_PARTY_OFF"
+  ]
+}
 
-    Create chained effects where one module’s output triggers another, with a delay.
+2. Send multiple notifications with individual payloads
 
+{
+  trigger: "AUTO_LIGHT_OFF",
+  delay: 1000,
+  send: [
+    { notification: "FRAMELIGHT_OFF", payload: { brightness: 0 } },
+    { notification: "FRAMELIGHT_PARTY_OFF", payload: { mode: "stop" } }
+  ]
+}
+
+3. Use a shared rule-level payload
+
+{
+  trigger: "SENSOR_TRIGGER",
+  delay: 5000,
+  send: ["NOTIF_ONE", "NOTIF_TWO"],
+  payload: { source: "sensor" }
+}
+
+Both NOTIF_ONE and NOTIF_TWO will be sent with { source: "sensor" }.
 📝 License
 
 MIT License
-
-
