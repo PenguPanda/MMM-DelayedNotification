@@ -85,7 +85,6 @@ payload	Object	❌	Optional payload applied to all notifications in this rule (u
   payload: { source: "sensor" }
 }
 
-Both NOTIF_ONE and NOTIF_TWO will be sent with { source: "sensor" }.
-📝 License
+Both NOTIF_ONE and NOTIF_TWO will be sent with { source: "sensor" }
 
 MIT License
